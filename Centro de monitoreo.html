@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centro de Monitoreo - Bogotá Villavicencio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins', sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#0f172a,#1e293b,#334155);
+    color:white;
+    min-height:100vh;
+    padding:20px;
+}
+
+header{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+header h1{
+    font-size:2.5rem;
+    margin-bottom:10px;
+}
+
+header p{
+    color:#cbd5e1;
+}
+
+.dashboard{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(10px);
+    border-radius:20px;
+    padding:20px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.3);
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+}
+
+.card h2{
+    margin-bottom:15px;
+    font-size:1.3rem;
+}
+
+.sensor{
+    margin:15px 0;
+}
+
+.progress{
+    width:100%;
+    height:15px;
+    background:#1e293b;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.progress span{
+    display:block;
+    height:100%;
+    border-radius:20px;
+}
+
+.humedad{
+    width:85%;
+    background:#38bdf8;
+}
+
+.inclinacion{
+    width:65%;
+    background:#facc15;
+}
+
+.presion{
+    width:90%;
+    background:#ef4444;
+}
+
+.alerta{
+    text-align:center;
+}
+
+.alerta-box{
+    margin-top:20px;
+    padding:20px;
+    border-radius:15px;
+    background:#dc2626;
+    animation:parpadeo 1s infinite;
+}
+
+@keyframes parpadeo{
+    0%{opacity:1;}
+    50%{opacity:0.5;}
+    100%{opacity:1;}
+}
+
+button{
+    margin-top:20px;
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:12px;
+    background:#22c55e;
+    color:white;
+    font-size:1rem;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    background:#16a34a;
+}
+
+.mapa{
+    position:relative;
+    height:250px;
+    background:linear-gradient(to top,#14532d,#166534,#4ade80);
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.montana{
+    position:absolute;
+    bottom:0;
+    width:100%;
+    height:80%;
+    background:#3f3f46;
+    clip-path:polygon(0% 100%,20% 60%,40% 80%,60% 40%,80% 70%,100% 20%,100% 100%);
+}
+
+.sensor-point{
+    position:absolute;
+    width:15px;
+    height:15px;
+    background:red;
+    border-radius:50%;
+    animation:pulse 1.5s infinite;
+}
+
+.sensor1{top:40%; left:30%;}
+.sensor2{top:25%; left:60%;}
+.sensor3{top:55%; left:75%;}
+
+@keyframes pulse{
+    0%{transform:scale(1); opacity:1;}
+    50%{transform:scale(1.5); opacity:0.5;}
+    100%{transform:scale(1); opacity:1;}
+}
+
+.estado{
+    display:flex;
+    justify-content:space-between;
+    margin-top:15px;
+}
+
+.estado div{
+    padding:10px 15px;
+    border-radius:10px;
+    font-weight:bold;
+}
+
+.verde{
+    background:#16a34a;
+}
+
+.amarillo{
+    background:#eab308;
+    color:black;
+}
+
+.rojo{
+    background:#dc2626;
+}
+
+footer{
+    margin-top:40px;
+    text-align:center;
+    color:#cbd5e1;
+}
+</style>
+</head>
+<body>
+
+<header>
+    <h1>🌎 Centro de Monitoreo de Deslizamientos</h1>
+    <p>Vía Bogotá – Villavicencio | Sistema Inteligente de Alertas Tempranas</p>
+</header>
+
+<div class="dashboard">
+
+    <div class="card">
+        <h2>📡 Sensores del Terreno</h2>
+
+        <div class="sensor">
+            <p>Humedad del suelo - 85%</p>
+            <div class="progress">
+                <span class="humedad"></span>
+            </div>
+        </div>
+
+        <div class="sensor">
+            <p>Inclinación del terreno - 65%</p>
+            <div class="progress">
+                <span class="inclinacion"></span>
+            </div>
+        </div>
+
+        <div class="sensor">
+            <p>Presión interna - 90%</p>
+            <div class="progress">
+                <span class="presion"></span>
+            </div>
+        </div>
+
+        <button onclick="generarAlerta()">Generar Alerta</button>
+    </div>
+
+    <div class="card alerta">
+        <h2>🚨 Estado del Sistema</h2>
+
+        <div id="mensaje" class="alerta-box">
+            Riesgo Alto de Deslizamiento
+        </div>
+
+        <div class="estado">
+            <div class="verde">Bajo</div>
+            <div class="amarillo">Medio</div>
+            <div class="rojo">Alto</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>🗺️ Zona Monitoreada</h2>
+
+        <div class="mapa">
+            <div class="montana"></div>
+            <div class="sensor-point sensor1"></div>
+            <div class="sensor-point sensor2"></div>
+            <div class="sensor-point sensor3"></div>
+        </div>
+
+        <p style="margin-top:15px; color:#cbd5e1;">
+            Sensores instalados en puntos críticos del talud para detectar humedad, presión e inclinación del terreno.
+        </p>
+    </div>
+
+</div>
+
+<footer>
+    <p>Proyecto de Ingeniería I - Universidad Nacional Abierta y a Distancia</p>
+    <p>Prototipo de Bajo Nivel | Ingeniería de Sistemas</p>
+</footer>
+
+<script>
+function generarAlerta(){
+    const mensaje = document.getElementById('mensaje');
+
+    mensaje.innerHTML = '⚠️ ALERTA ENVIADA A LAS AUTORIDADES';
+    mensaje.style.background = '#f97316';
+
+    setTimeout(() => {
+        mensaje.innerHTML = '🚨 Riesgo Alto de Deslizamiento';
+        mensaje.style.background = '#dc2626';
+    }, 3000);
+}
+</script>
+
+</body>
+</html>
